@@ -124,30 +124,23 @@ function numberToBanglaWords(num) {
 }
 
 // ═══════════════════════════════════════
-// ── Sections (with CacheService) ──
+// ── Sections ──
 // ═══════════════════════════════════════
 
 function getSections() {
-  var cache = CacheService.getScriptCache();
-  var cached = cache.get('sectionsList');
-  if (cached) return JSON.parse(cached);
-
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   var sheet = ss.getSheetByName("Sections Name");
   if (!sheet) return [];
-  var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
+  
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return [];
+  
+  var data = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
   var sections = [];
   for (var i = 0; i < data.length; i++) {
     if (data[i][0]) sections.push(data[i][0]);
   }
-
-  cache.put('sectionsList', JSON.stringify(sections), 21600);
   return sections;
-}
-
-function refreshSectionsCache() {
-  CacheService.getScriptCache().remove('sectionsList');
-  return getSections();
 }
 
 // ── Unified init ──
