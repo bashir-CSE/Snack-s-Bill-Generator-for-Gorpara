@@ -1,6 +1,5 @@
 var SPREADSHEET_ID = '1S-sSi4VPvU2DjuQ_Ji-c8P_ZfteESvQiJ9Wne1dnA_o';
 var DRIVE_FOLDER_ID = '1DvAqAkA5FzpCFXOpyO6_0mLEuuJvJrEY';
-var LOGO_FILE_ID = '';
 
 function doGet() {
   return HtmlService.createTemplateFromFile('index')
@@ -200,6 +199,86 @@ function getArtisans(sectionName) {
     }
   }
   return artisans;
+}
+
+// ═══════════════════════════════════════
+// ── Quick Add Artisan ──
+// ═══════════════════════════════════════
+// Adds a new artisan row to the specified section sheet and returns the refreshed list.
+
+function addArtisan(sectionName, artisanName, artisanCode) {
+  // Validate inputs
+  if (!sectionName || !artisanName) {
+    return { success: false, message: 'Section name and artisan name are required.' };
+  }
+
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(sectionName);
+  if (!sheet) {
+    return { success: false, message: 'Section "' + sectionName + '" not found in the spreadsheet.' };
+  }
+
+  // Check for duplicate name (case-insensitive) to prevent accidental re-adds
+  var lastRow = sheet.getLastRow();
+  if (lastRow >= 2) {
+    var existingData = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+    for (var i = 0; i < existingData.length; i++) {
+      if (String(existingData[i][0]).trim().toLowerCase() === artisanName.trim().toLowerCase()) {
+        return { success: false, message: 'An artisan named "' + artisanName + '" already exists in this section.' };
+      }
+    }
+  }
+
+  // Append the new artisan row (Name in col A, Code in col B)
+  sheet.appendRow([artisanName.trim(), artisanCode ? artisanCode.trim() : '']);
+
+  // Return the refreshed artisan list so the modal can re-render instantly
+  var updatedArtisans = getArtisans(sectionName);
+  return { success: true, message: 'Artisan added successfully!', artisans: updatedArtisans };
+}
+
+// ═══════════════════════════════════════
+// ── Remove Artisan ──
+// ═══════════════════════════════════════
+// Deletes a specific artisan row from the section sheet and returns the refreshed list.
+
+function removeArtisan(sectionName, artisanName) {
+  // Validate inputs
+  if (!sectionName || !artisanName) {
+    return { success: false, message: 'Section name and artisan name are required.' };
+  }
+
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(sectionName);
+  if (!sheet) {
+    return { success: false, message: 'Section "' + sectionName + '" not found in the spreadsheet.' };
+  }
+
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) {
+    return { success: false, message: 'No artisans found in this section.' };
+  }
+
+  // Search for the artisan row by name (case-insensitive match)
+  var data = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  var rowToDelete = -1;
+  for (var i = 0; i < data.length; i++) {
+    if (String(data[i][0]).trim().toLowerCase() === artisanName.trim().toLowerCase()) {
+      rowToDelete = i + 2; // +2 because data starts at row 2 (1-indexed) and array is 0-indexed
+      break;
+    }
+  }
+
+  if (rowToDelete === -1) {
+    return { success: false, message: 'Artisan "' + artisanName + '" was not found in this section.' };
+  }
+
+  // Delete the matched row from the sheet
+  sheet.deleteRow(rowToDelete);
+
+  // Return the refreshed artisan list so the modal can re-render instantly
+  var updatedArtisans = getArtisans(sectionName);
+  return { success: true, message: 'Artisan removed successfully!', artisans: updatedArtisans };
 }
 
 // ── Generate Bills ──

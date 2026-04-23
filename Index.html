@@ -412,6 +412,81 @@
     .app-card{
       height: 320px;
     }
+
+    /* ── Quick Add Artisan ── */
+    .quick-add-section {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #f0f9ff, #eff6ff);
+    }
+    .quick-add-toggle {
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 0.2px;
+      transition: all 0.25s ease;
+    }
+    .quick-add-toggle:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59,130,246,0.25);
+    }
+    .quick-add-form {
+      margin-top: 12px;
+      padding: 14px 16px;
+      background: rgba(255,255,255,0.85);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      animation: slideDown 0.3s ease-out;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; max-height: 0; transform: translateY(-8px); }
+      to   { opacity: 1; max-height: 200px; transform: translateY(0); }
+    }
+    .quick-add-form .form-control-sm {
+      border-radius: 8px;
+      font-size: 0.82rem;
+    }
+    .quick-add-form .btn-success {
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      padding: 6px 0;
+    }
+    .quick-add-feedback-success {
+      color: var(--success);
+      font-weight: 600;
+    }
+    .quick-add-feedback-error {
+      color: #dc2626;
+      font-weight: 600;
+    }
+
+    /* ── Delete Artisan Row Animation ── */
+    .btn-delete-artisan {
+      background: none;
+      border: none;
+      color: #dc2626;
+      cursor: pointer;
+      font-size: 0.92rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-delete-artisan:hover {
+      background: #fef2f2;
+      color: #b91c1c;
+      transform: scale(1.15);
+    }
+    .btn-delete-artisan:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
   </style>
 </head>
 
@@ -420,7 +495,7 @@
   <!-- ── Sticky Navbar ── -->
   <nav class="top-navbar fade-in-simple">
     <div class="container d-flex align-items-center justify-content-between">
-      <span class="brand"><i class="fas fa-file-invoice-dollar me-2"></i>Snack's Bill Generator</span>
+      <span class="brand"><i class="fas fa-file-invoice-dollar me-2"></i>Snacks Bill Generator</span>
       <div class="date-input-wrap">
         <i class="fas fa-calendar-day"></i>
         <input type="date" id="billDate">
@@ -432,7 +507,7 @@
   <div id="loadingOverlay">
     <div class="loading-box fade-in-simple">
       <i class="fas fa-file-export confirm-icon-animate"></i>
-      <p id="loadingText">Generating PDF Document...</p>
+      <p id="loadingText">Cooking PDF Document...</p>
       <div class="progress-wrapper">
         <div class="progress-bar-striped-animated"></div>
       </div>
@@ -444,7 +519,7 @@
     <div class="page-header fade-in-simple">
       <h2>Ayesha Abed Foundation — Gorpara, Manikganj</h2>
       <h4>Aarong Production Center</h4>
-      <h5>Daily Snack's Bill</h5>
+      <h5>Daily Snacks Bill</h5>
     </div>
 
     <div class="row g-4 mt-1 mb-5">
@@ -462,7 +537,7 @@
           </div>
 
           <div class="mb-4">
-            <label for="snacksRate" class="form-label"><i class="fas fa-coins text-warning"></i> Snack's Rate
+            <label for="snacksRate" class="form-label"><i class="fas fa-coins text-warning"></i> Snacks Rate
               (Tk.)</label>
             <input type="number" class="form-control" id="snacksRate" placeholder="Enter rate per artisan" min="1">
           </div>
@@ -497,23 +572,64 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body p-0">
-          <div class="search-box">
-            <input type="text" class="form-control" id="artisanSearch" placeholder="🔍 Search by name or code..."
-              oninput="filterArtisans()">
+          <!-- ── Modal Control Header (3-Column Layout: 30% | 40% | 30%) ── -->
+          <div class="modal-controls-header border-bottom bg-light">
+            <div class="d-flex align-items-center w-100">
+              <!-- Column 1: Select All (30%) -->
+              <div class="d-flex justify-content-center align-items-center border-end py-3" style="width: 25%;">
+                <div class="form-check form-switch m-0">
+                  <input class="form-check-input me-2" type="checkbox" role="switch" id="selectAll"
+                    onclick="toggleSelectAll(this)" checked>
+                  <label class="form-check-label fw-bold text-nowrap" style="cursor:pointer; font-size: 0.85rem;" for="selectAll">Select All Artisans</label>
+                </div>
+              </div>
+              
+              <!-- Column 2: Search Bar (40%) -->
+              <div class="px-3 py-2 border-end" style="width: 50%;">
+                <div class="position-relative">
+                  <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary" style="font-size: 0.85rem;"></i>
+                  <input type="text" class="form-control form-control-sm ps-5" id="artisanSearch" placeholder="Search name or code..."
+                    oninput="filterArtisans()" style="border-radius: 20px; background: #fff; border: 1.5px solid var(--border);">
+                </div>
+              </div>
+              
+              <!-- Column 3: Quick Add Toggle (30%) -->
+              <div class="d-flex justify-content-center align-items-center py-2" style="width: 25%;">
+                <button class="btn btn-sm btn-primary quick-add-toggle px-3 shadow-sm" type="button" onclick="toggleQuickAdd()" style="border-radius: 20px; font-size: 0.8rem; font-weight: 600;">
+                  <i class="fas fa-user-plus me-1"></i> Add Artisan
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="form-check form-switch d-flex justify-content-center py-2">
-            <input class="form-check-input me-2" type="checkbox" role="switch" id="selectAll"
-              onclick="toggleSelectAll(this)" checked>
-            <label class="form-check-label" style="cursor:pointer;" for="selectAll"> Select All</label>
+
+          <!-- ── Quick Add Artisan Form (Full Width) ── -->
+          <div id="quickAddForm" class="quick-add-form mx-3 mb-3 mt-2" style="display:none;">
+            <div class="row g-2 align-items-end">
+              <div class="col-5">
+                <label class="form-label mb-1" style="font-size:0.76rem;"><i class="fas fa-user text-primary me-1"></i>Artisan Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control form-control-sm" id="quickAddName" placeholder="Enter name...">
+              </div>
+              <div class="col-4">
+                <label class="form-label mb-1" style="font-size:0.76rem;"><i class="fas fa-hashtag text-secondary me-1"></i>Code (Optional)</label>
+                <input type="text" class="form-control form-control-sm" id="quickAddCode" placeholder="Enter code...">
+              </div>
+              <div class="col-3 d-grid">
+                <button class="btn btn-sm btn-success" id="quickAddBtn" onclick="quickAddArtisan()">
+                  <i class="fas fa-plus-circle me-1"></i> Add
+                </button>
+              </div>
+            </div>
+            <div id="quickAddFeedback" class="mt-2" style="font-size:0.8rem;"></div>
           </div>
           <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
             <table class="table table-hover table-bordered mb-0">
               <thead class="table-dark sticky-top">
                 <tr>
-                  <th class="text-center" style="width: 10%">Sl No</th>
-                  <th class="text-center" style="width: 12%">Select</th>
-                  <th style="width: 40%">Name</th>
-                  <th class="text-center" style="width: 20%">Code</th>
+                  <th class="text-center" style="width: 8%">Sl. No.</th>
+                  <th class="text-center" style="width: 10%">Select</th>
+                  <th style="width: 35%">Name</th>
+                  <th class="text-center" style="width: 17%">Code</th>
+                  <th class="text-center" style="width: 10%">Action</th>
                 </tr>
               </thead>
               <tbody id="artisanTableBody"></tbody>
@@ -522,7 +638,7 @@
         </div>
         <div class="modal-footer bg-light">
           <button type="button" class="btn btn-generate" onclick="showConfirmation()" id="generateBtn">
-            <i class="fas fa-file-pdf me-1"></i> Generate Your Snack,s Bill
+            <i class="fas fa-file-pdf me-1"></i> Coock Your Snacks Bill
           </button>
         </div>
       </div>
@@ -541,14 +657,35 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4 text-center">
-          <h6 class="mb-3 text-secondary" style="font-weight: 600;">Are you sure you want to proceed?</h6>
+          <h6 class="mb-3 text-secondary" style="font-weight: 600;">Are you sure you want to cook?</h6>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary btn-sm" onclick="goBackToArtisans()">
             <i class="fas fa-arrow-left me-1"></i> Back
           </button>
           <button type="button" class="btn btn-generate btn-sm" onclick="confirmAndGenerate()">
-            <i class="fas fa-check-double me-1 confirm-icon-animate"></i> Proceed
+            <i class="fas fa-check-double me-1 confirm-icon-animate"></i> Yes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Delete Confirmation Modal ── -->
+  <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content border-danger">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title"><i class="fas fa-trash-alt me-1"></i> Confirm Delete</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center py-4">
+          <p class="mb-0" style="font-size:0.95rem;">Are you sure you want to permanently remove <strong id="deleteArtisanName"></strong> from this section?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger btn-sm" onclick="executeDeleteArtisan()">
+            <i class="fas fa-trash-alt me-1"></i> Confirm Delete
           </button>
         </div>
       </div>
@@ -619,9 +756,11 @@
 
     /* ── Globals ── */
     // Initialize error, success and confirmation modal references globally
-    let errorModal, successModal, confirmModalInstance;
+    let errorModal, successModal, confirmModalInstance, deleteConfirmModal;
     // Create a temporary object specifically to store generated configurations before sending to script
     let pendingBillData = null;
+    // Store data for artisan deletion confirmation
+    let pendingDeleteData = null;
 
     const today = new Date();
     document.getElementById('footerYear').textContent = today.getFullYear();
@@ -656,6 +795,8 @@
       successModal = new bootstrap.Modal(document.getElementById('successModal'));
       // Instantiate confirmation modal instance
       confirmModalInstance = new bootstrap.Modal(document.getElementById('confirmModal'));
+      // Instantiate delete confirmation modal
+      deleteConfirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
       // Call Google Apps script to preload necessary dropdowns
       google.script.run.withSuccessHandler(handleInitialData).getInitialData();
     };
@@ -714,9 +855,9 @@
       const rate = document.getElementById('snacksRate').value;
       const dateVal = getSelectedDate();
 
-      if (!dateVal) return showError('Please select a valid date.');
+      if (!dateVal) return showError('Please select a date.');
       if (!section) return showError('Please select a section name.');
-      if (!rate || rate <= 0) return showError("Please enter a valid Snack's Rate.");
+      if (!rate || rate <= 0) return showError("Please enter a valid Snacks Rate.");
 
       const btn = document.getElementById('loadBtn');
       btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Loading...';
@@ -738,10 +879,11 @@
       tbody.innerHTML = '';
 
       if (artisans.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-danger fw-bold">No data found in this section.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-danger fw-bold">No artisans found in this section.</td></tr>';
       } else {
         artisans.forEach((artisan, i) => {
           const safeJson = escHtml(JSON.stringify(artisan));
+          const safeName = escHtml(artisan.name).replace(/'/g, "\\'");
           tbody.innerHTML += `
             <tr>
               <td class="text-center align-middle">${i + 1}</td>
@@ -750,6 +892,11 @@
               </td>
               <td class="align-middle">${escHtml(artisan.name)}</td>
               <td class="text-center align-middle">${escHtml(artisan.code)}</td>
+              <td class="text-center align-middle">
+                <button class="btn-delete-artisan" title="Remove artisan" onclick="deleteArtisan('${safeName}', this)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
             </tr>`;
         });
       }
@@ -787,12 +934,197 @@
       });
     }
 
+    /* ── Quick Add Artisan Functions ── */
+
+    // Toggle the visibility of the Quick Add form with smooth animation
+    function toggleQuickAdd() {
+      const form = document.getElementById('quickAddForm');
+      if (form.style.display === 'none') {
+        form.style.display = 'block';
+        document.getElementById('quickAddName').focus();
+      } else {
+        form.style.display = 'none';
+        // Clear inputs and feedback when collapsing
+        document.getElementById('quickAddName').value = '';
+        document.getElementById('quickAddCode').value = '';
+        document.getElementById('quickAddFeedback').innerHTML = '';
+      }
+    }
+
+    // Submit the Quick Add form to the backend and refresh the artisan table
+    function quickAddArtisan() {
+      const section = document.getElementById('sectionSelect').value;
+      const name = document.getElementById('quickAddName').value.trim();
+      const code = document.getElementById('quickAddCode').value.trim();
+      const feedback = document.getElementById('quickAddFeedback');
+      const addBtn = document.getElementById('quickAddBtn');
+
+      // Validate required fields
+      if (!name) {
+        feedback.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i> Artisan name is required.';
+        feedback.className = 'mt-2 quick-add-feedback-error';
+        document.getElementById('quickAddName').focus();
+        return;
+      }
+
+      // Disable button and show spinner during server call
+      addBtn.disabled = true;
+      addBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      feedback.innerHTML = '';
+
+      google.script.run
+        .withSuccessHandler(function(res) {
+          addBtn.disabled = false;
+          addBtn.innerHTML = '<i class="fas fa-plus-circle me-1"></i> Add';
+
+          if (res.success) {
+            // Show success feedback with checkmark
+            feedback.innerHTML = '<i class="fas fa-check-circle me-1"></i> ' + escHtml(res.message);
+            feedback.className = 'mt-2 quick-add-feedback-success';
+
+            // Clear input fields for the next entry
+            document.getElementById('quickAddName').value = '';
+            document.getElementById('quickAddCode').value = '';
+            document.getElementById('quickAddName').focus();
+
+            // Re-render the artisan table with the updated list from the server
+            rebuildArtisanTable(res.artisans);
+
+            // Auto-clear the success message after 3 seconds
+            setTimeout(function() { feedback.innerHTML = ''; }, 3000);
+          } else {
+            // Show error message returned from the server
+            feedback.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> ' + escHtml(res.message);
+            feedback.className = 'mt-2 quick-add-feedback-error';
+          }
+        })
+        .withFailureHandler(function(err) {
+          addBtn.disabled = false;
+          addBtn.innerHTML = '<i class="fas fa-plus-circle me-1"></i> Add';
+          feedback.innerHTML = '<i class="fas fa-times-circle me-1"></i> Error: ' + escHtml(err.message);
+          feedback.className = 'mt-2 quick-add-feedback-error';
+        })
+        .addArtisan(section, name, code);
+    }
+
+    // Re-render the artisan table body with a fresh artisan list (preserving checked state where possible)
+    function rebuildArtisanTable(artisans) {
+      // Save currently checked artisan names so we can restore their state
+      const previouslyChecked = new Set();
+      document.querySelectorAll('.artisan-checkbox:checked').forEach(cb => {
+        try { previouslyChecked.add(JSON.parse(cb.value).name); } catch(e) {}
+      });
+
+      const tbody = document.getElementById('artisanTableBody');
+      tbody.innerHTML = '';
+
+      if (!artisans || artisans.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-danger fw-bold">No artisans found in this section.</td></tr>';
+      } else {
+        artisans.forEach((artisan, i) => {
+          const safeJson = escHtml(JSON.stringify(artisan));
+          // Newly added artisan (not in previous list) is also checked by default
+          const isChecked = previouslyChecked.has(artisan.name) || !previouslyChecked.size ? 'checked' : '';
+          const safeName = escHtml(artisan.name).replace(/'/g, "\\'");
+          tbody.innerHTML += `
+            <tr>
+              <td class="text-center align-middle">${i + 1}</td>
+              <td class="text-center align-middle">
+                <input class="form-check-input artisan-checkbox" type="checkbox" value='${safeJson}' ${isChecked} onclick="updateSelectCount()">
+              </td>
+              <td class="align-middle">${escHtml(artisan.name)}</td>
+              <td class="text-center align-middle">${escHtml(artisan.code)}</td>
+              <td class="text-center align-middle">
+                <button class="btn-delete-artisan" title="Remove artisan" onclick="deleteArtisan('${safeName}', this)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>`;
+        });
+      }
+
+      // Update the select-all toggle and badge count
+      const allCbs = document.querySelectorAll('.artisan-checkbox');
+      const allChecked = document.querySelectorAll('.artisan-checkbox:checked');
+      document.getElementById('selectAll').checked = allCbs.length === allChecked.length;
+      updateSelectCount();
+
+      // Re-apply any active search filter
+      const searchVal = document.getElementById('artisanSearch').value;
+      if (searchVal) filterArtisans();
+    }
+
+    /* ── Delete Artisan ── */
+
+    // Prepare deletion by showing the confirmation modal
+    function deleteArtisan(artisanName, btnElement) {
+      // Store the data needed for deletion
+      pendingDeleteData = {
+        name: artisanName,
+        btn: btnElement,
+        row: btnElement.closest('tr'),
+        section: document.getElementById('sectionSelect').value
+      };
+
+      // Set the name in the modal
+      document.getElementById('deleteArtisanName').textContent = artisanName;
+
+      // Show the Bootstrap confirmation modal
+      deleteConfirmModal.show();
+    }
+
+    // Actually execute the deletion after user confirms in the modal
+    function executeDeleteArtisan() {
+      if (!pendingDeleteData) return;
+
+      const { name, btn, row, section } = pendingDeleteData;
+
+      // Hide the confirmation modal
+      deleteConfirmModal.hide();
+
+      // Disable all delete buttons to prevent double-clicks during processing
+      document.querySelectorAll('.btn-delete-artisan').forEach(btn => btn.disabled = true);
+
+      // Replace the trash icon with a spinner on the clicked button
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+      // Trigger the red highlight fade-out animation on the row
+      row.classList.add('row-deleting');
+
+      // Call the backend to delete the artisan from the Google Sheet
+      google.script.run
+        .withSuccessHandler(function(res) {
+          if (res.success) {
+            // After the animation completes (600ms), rebuild the table with updated data
+            setTimeout(function() {
+              rebuildArtisanTable(res.artisans);
+            }, 600);
+          } else {
+            // Restore the row if deletion failed
+            row.classList.remove('row-deleting');
+            btn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            document.querySelectorAll('.btn-delete-artisan').forEach(btn => btn.disabled = false);
+            showError(res.message);
+          }
+          pendingDeleteData = null;
+        })
+        .withFailureHandler(function(err) {
+          // Restore the row on network error
+          row.classList.remove('row-deleting');
+          btn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+          document.querySelectorAll('.btn-delete-artisan').forEach(btn => btn.disabled = false);
+          showError('Failed to remove artisan: ' + err.message);
+          pendingDeleteData = null;
+        })
+        .removeArtisan(section, name);
+    }
+
     /* ── Confirmation Summary Flow ── */
     // Function triggered to show the confirmation pop-up
     function showConfirmation() {
       // Gather the selected section name from the dropdown
       const section = document.getElementById('sectionSelect').value;
-      // Gather the snack's rate specified by the user
+      // Gather the Snacks rate specified by the user
       const rate = document.getElementById('snacksRate').value;
       // Convert the configured date to local format
       const dateStr = getSelectedDate();
