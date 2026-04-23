@@ -1,66 +1,64 @@
+Automation Link: https://script.google.com/macros/s/AKfycbzlL7oMpgigyGsCYTm0WAvZUTK4hT6Hsq0TtgOmOI9Wz-VbiylxvOM57leGeun8t0pp/exec
+
 # Snack's Bill Generator
 
-**A fully automated, cloud-based solution for generating daily snack bills, designed specifically for the Ayesha Abed Foundation (Gorpara, Manikganj).**
-
-![Built with Google Apps Script](https://img.shields.io/badge/Built%20with-Google%20Apps%20Script-blue)
-![Built with Bootstrap](https://img.shields.io/badge/Style-Bootstrap%205-purple)
+![Built with Google Apps Script](https://img.shields.io/badge/Backend-Google%20Apps%20Script-blue)
+![Frontend](https://img.shields.io/badge/Frontend-Bootstrap%205-purple)
 ![License](https://img.shields.io/badge/License-MIT-green)
+
+**A fully automated, cloud-based solution for generating daily snack bills, designed for the Ayesha Abed Foundation (Gorpara, Manikganj).**
 
 ---
 
 ## 📖 Table of Contents
-1.  [Problem Statement](#-problem-statement)
+1.  [The Problem](#-the-problem)
 2.  [The Solution](#-the-solution)
 3.  [Key Features](#-key-features)
 4.  [Tech Stack](#-tech-stack)
-5.  [Installation & Setup](#-installation--setup)
+5.  [Setup & Installation](#-installation--setup)
 6.  [Use Case](#-use-case)
 7.  [Opportunities & Impact](#-opportunities--impact)
 8.  [Limitations](#-limitations)
 9.  [Future Improvements](#-future-improvements)
-10. [Acknowledgements](#-acknowledgements)
 
 ---
 
-## 🚨 Problem Statement
+## 🚨 The Problem
 
-In our production center, the Section In-charge was required to prepare daily snack bills manually. This traditional method presented several challenges:
-*   **High Error Rate:** Manual entry often led to calculation mistakes or duplicate entries.
-*   **Repetitive Effort:** If a single mistake occurred, the entire bill had to be redone from scratch, wasting valuable time.
-*   **Resource Wastage:** Significant man-hours were lost in administrative tasks rather than core production management.
-*   **Data Retrieval:** Searching for past records in physical files was inefficient and prone to data loss.
+In our production center, the Section In-charge faced significant challenges with the manual preparation of daily snack bills:
+*   **High Error Rate:** Manual calculations often resulted in financial discrepancies.
+*   **Repetitive Effort:** A single mistake meant redoing the entire bill from scratch.
+*   **Data Management:** Adding new workers or removing inactive ones required manual spreadsheet editing, often done by separate data entry personnel.
+*   **Resource Wastage:** Valuable time was lost on administrative tasks rather than core production management.
 
 ## 💡 The Solution
 
-The **Snack's Bill Generator** is a web application hosted on Google Apps Script that digitizes and automates the entire billing workflow.
+The **Snack's Bill Generator** is a serverless web application hosted on Google Apps Script. It digitizes the billing workflow, allowing section in-charges to generate professional PDF bills in Bengali directly from their browser.
 
-By simply selecting a date, section, and rate, the system automatically fetches artisan lists, allows for selection, and generates a professionally formatted PDF bill in Bengali. This solution has successfully:
-*   **Reduced manual effort by 90%.**
-*   **Improved operational efficiency by 50–70%.**
-*   **Eliminated repetitive tasks** via automated calculation and PDF generation.
+**Latest Update:** The system now supports **full data management**, allowing users to add new artisans or remove inactive ones directly from the interface without touching the backend spreadsheet.
 
 ---
 
 ## ✨ Key Features
 
-### 1. Intelligent Automation
-*   **Dynamic Data Fetching:** Automatically loads artisan lists based on the selected section from the Google Sheet database.
-*   **Rate Memory:** Remembers the last used "Snack's Rate" for specific users, reducing data entry.
-*   **Bengali Localization:** Automatically converts dates, numbers, and total amounts into Bengali text (e.g., converting `150` to `একশ পঞ্চাশ`).
+### 1. Intelligent Bill Generation
+*   **Dynamic PDF Creation:** Generates print-ready PDFs with Bengali numerals and text conversion (e.g., `150` → `একশ পঞ্চাশ`).
+*   **Smart Pagination:** Automatically splits large lists into multiple pages (30 artisans per page) with sub-totals.
+*   **Signature Ready:** Includes designated areas for Prepared By, Verified By, and Approved By.
 
-### 2. Professional PDF Generation
-*   **Standardized Format:** Generates uniform bills with headers for "BRAC - Aarong" and specific location details.
-*   **Smart Pagination:** Automatically splits bills into multiple pages if the artisan count exceeds 30 per page.
-*   **Signature Ready:** Includes built-in blocks for "Prepared By," "Verified By," and "Approved By."
+### 2. Interactive Data Management (New)
+*   **Quick Add Artisans:** Users can instantly add a new artisan name and code via the "Quick Add" bar without opening the Google Sheet.
+*   **Delete Functionality:** Remove duplicate or inactive artisan records directly from the modal table with one click.
+*   **Visible Codes:** The selection table now displays the artisan's Code clearly, preventing confusion between workers with similar names.
 
 ### 3. Modern User Interface
-*   **Glassmorphism Design:** Clean, modern aesthetic with blur effects and smooth transitions.
-*   **Responsive Layout:** Fully functional on desktops, tablets, and mobile devices.
-*   **Interactive Modals:** Easy selection of artisans with "Select All" toggles and real-time search filters.
+*   **Glassmorphism Design:** A clean, modern aesthetic with smooth animations.
+*   **Real-time Search:** Filter artisans by name or code instantly.
+*   **Select All/None:** Toggle visibility for all artisans with a single switch.
 
 ### 4. Cloud Architecture
-*   **Google Drive Integration:** PDFs are automatically saved to a specific Google Drive folder.
-*   **Auto-Cleanup:** A time-driven trigger runs at midnight to delete previous PDFs and clear logs, ensuring no storage bloat.
+*   **Google Drive Integration:** PDFs are automatically saved and organized in a specific Drive folder.
+*   **Auto-Cleanup:** A time-driven trigger runs at midnight to delete old PDFs and clear logs, ensuring no storage bloat.
 *   **History Tracking:** Displays the current day's generated bills for quick access.
 
 ---
@@ -69,88 +67,90 @@ By simply selecting a date, section, and rate, the system automatically fetches 
 
 | Category | Technologies Used |
 | :--- | :--- |
-| **Frontend** | HTML5, CSS3 (Glassmorphism), Bootstrap 5, Font Awesome |
+| **Frontend** | HTML5, CSS3 (Custom Properties), Bootstrap 5, Font Awesome |
+| **Logic** | Vanilla JavaScript (ES6), jQuery (optional) |
 | **Backend** | Google Apps Script (Serverless) |
 | **Database** | Google Sheets (SpreadsheetService) |
 | **Storage** | Google Drive (DriveApp) |
-| **AI Assistance** | Gemini 3.1 Pro, Z.ai GLM-5-Turbo (used for logic generation) |
+| **AI Assistance** | Gemini 3.1 Pro, Z.ai GLM-5-Turbo |
 
 ---
 
 ## ⚙️ Installation & Setup
 
-To deploy this project for your own organization, follow these steps:
+To deploy this project for your organization:
 
-### 1. Google Sheet Setup
-1.  Create a new Google Sheet.
-2.  Create a sheet named **`Sections Name`**. List all section names in Column A (starting from A2).
-3.  Create individual sheets for **each section** (e.g., "Cutting", "Sewing"). In these sheets, Column A should contain **Artisan Names** and Column B should contain **Codes**.
-4.  Create a blank sheet named **`Snack's Bill`** (This will store the logs).
+### 1. Google Sheet Configuration
+1.  Create a Google Sheet.
+2.  **Sheet 1:** Name it `Sections Name`. List all section names in Column A.
+3.  **Sheet 2:** Name it `Snack's Bill`. Leave this empty (used for logging).
+4.  **Other Sheets:** Create a sheet for each section (e.g., `Cutting`, `Sewing`). In these sheets, Column A = **Name**, Column B = **Code**.
 
 ### 2. Google Drive Setup
-1.  Create a folder in Google Drive where the PDFs will be saved.
-2.  Copy the **Folder ID** from the URL (e.g., `drive.google.com/drive/folders/[FOLDER_ID]`).
+1.  Create a folder in Google Drive for storing PDFs.
+2.  Copy the **Folder ID** from the URL.
 
 ### 3. Apps Script Deployment
 1.  Open your Google Sheet and go to **Extensions > Apps Script**.
-2.  Delete any existing code and paste the contents of `Code.gs`.
-3.  Create a new HTML file named `index` and paste the contents of `index.html`.
+2.  Delete existing files and create two files: `Code.gs` and `index.html`.
+3.  Paste the provided code into the respective files.
 4.  **Update Configuration:**
-    *   In `Code.gs`, replace `SPREADSHEET_ID` with your Sheet ID.
-    *   Replace `DRIVE_FOLDER_ID` with your Drive Folder ID.
+    *   In `Code.gs`, replace `SPREADSHEET_ID` and `DRIVE_FOLDER_ID` with your actual IDs.
 5.  Click **Deploy > New Deployment**.
-6.  Select **Web App**.
-7.  Set "Who has access" to **Anyone** (or specific domain users).
-8.  Click **Deploy** and authorize the application.
+    *   Type: **Web App**.
+    *   Execute as: **Me**.
+    *   Who has access: **Anyone** (or your organization's domain).
+6.  Copy the Web App URL and share it with your team.
 
 ---
 
 ## 🎯 Use Case
 
-**Scenario:** It is 5:00 PM, and the Section In-charge needs to process the snack bills for the "Sewing" section.
+**Scenario:** A new artisan named "Karim" joins the "Sewing" section, and another artisan "Rahim" has left the job. The Section In-charge needs to generate today's bill.
 
-1.  The In-charge opens the Web App link on their mobile device.
-2.  They select the date (defaults to today) and choose "Sewing" from the dropdown.
-3.  They enter the snack rate (e.g., 15 Taka) and click **Load Artisans**.
-4.  A list of all artisans in "Sewing" appears. By default, all are selected. The In-charge unchecks anyone who was absent.
-5.  They click **Generate Bill**.
-6.  **Result:** A PDF is instantly generated in Bengali, saved to the Drive, and a link is provided. The total amount is automatically calculated in both numbers and words.
+1.  **Select Section:** The In-charge opens the app, selects "Sewing," and enters the snack rate.
+2.  **Load Data:** Clicking "Load Artisans" opens the list.
+3.  **Manage Changes:**
+    *   *Add New:* The In-charge types "Karim" and his code in the **Quick Add** bar and clicks **Add**. Karim appears instantly in the list, checked and ready.
+    *   *Remove:* The In-charge finds "Rahim," clicks the **Delete (Trash Icon)** button next to his name, and confirms. Rahim is removed from the database permanently.
+4.  **Generate:** The In-charge clicks **Generate Bill**.
+5.  **Result:** A PDF is created with the updated list, saved to Drive, and ready for printing.
 
 ---
 
 ## 📈 Opportunities & Impact
 
-*   **Scalability:** This framework can be adapted for other production centers (e.g., Jamalpur, Tangail) simply by changing the Google Sheet data source.
-*   **Go Green:** Eliminates the need for physical paper drafts, contributing to environmental sustainability.
-*   **Audit Readiness:** Digital records with timestamps make audits transparent and error-free.
-*   **Time Management:** Section In-charges can now focus on production quality and team management rather than clerical work.
+*   **Operational Efficiency:** Reduces the time spent on bill preparation by **90%**.
+*   **Data Integrity:** Empowers Section In-charges to manage their own team lists, removing the need for a middleman data entry operator.
+*   **Scalability:** The framework is generic and can be deployed to other production centers (e.g., Jamalpur, Tangail) by simply duplicating the Sheet and Script.
+*   **Go Green:** Eliminates the need for physical paper drafts and manual filing.
 
 ---
 
 ## ⚠️ Limitations
 
-1.  **Google Quotas:** The script relies on Google Apps Script quotas (e.g., URL Fetch calls, Drive storage). Very large datasets (thousands of rows) might hit execution time limits.
-2.  **Internet Dependency:** As a cloud-based app, it requires a stable internet connection to load data and generate PDFs.
-3.  **Browser Compatibility:** While optimized for modern browsers (Chrome, Edge), older browsers (IE) may not render the UI correctly.
-4.  **Static Data:** If an artisan is not listed in the Google Sheet, they cannot be added dynamically through the app interface; the sheet must be updated first.
+1.  **Internet Dependency:** As a cloud-based app, it requires a stable internet connection to load data and generate PDFs.
+2.  **Concurrent Editing:** If two users try to delete or add artisans in the exact same second, one might overwrite the other (Google Sheets handles this reasonably well, but it's a minor edge case).
+3.  **No "Undo" for Deletion:** Once an artisan is deleted via the interface, they are permanently removed from the Google Sheet. They must be re-added manually if deleted by mistake.
+4.  **Browser Compatibility:** Optimized for modern browsers (Chrome, Edge, Safari). May not function correctly on Internet Explorer.
 
 ---
 
 ## 🚀 Future Improvements
 
-1.  **Authentication Layer:** Implement a login system to track which user generated which bill for better accountability.
-2.  **Dashboard Analytics:** Integrate a chart dashboard to visualize monthly snack expenses per section.
-3.  **WhatsApp Integration:** Add a feature to automatically share the generated PDF link to a WhatsApp group.
-4.  **Offline Mode:** Use Progressive Web App (PWA) standards to allow data entry offline, which syncs when the connection is restored.
-5.  **Edit Functionality:** Allow users to "Edit" a generated bill within a specific timeframe instead of generating a new one.
+1.  **Edit Functionality:** Allow users to correct a name or code without deleting and re-adding the row.
+2.  **Dashboard Analytics:** A visual dashboard showing monthly snack expenses per section using Google Charts.
+3.  **WhatsApp Integration:** A button to share the generated PDF directly to a WhatsApp group.
+4.  **PWA Support:** Make the app installable on mobile home screens for offline data viewing.
+5.  **Audit Log:** Create a separate "Audit" sheet to track who deleted or added which artisan and when.
 
 ---
 
 ## 🙏 Acknowledgements
 
-*   **Ayesha Abed Foundation** — Gorpara, Manikganj, for the opportunity to digitize their workflow.
-*   **Gemini 3.1 Pro & Z.ai GLM-5-Turbo** — AI tools that assisted in code optimization and logic structuring.
-*   **Bootstrap Team** — For the excellent frontend framework.
+*   **Ayesha Abed Foundation** — Gorpara, Manikganj.
+*   **Gemini 3.1 Pro & Z.ai GLM-5-Turbo** — For code logic assistance.
+*   **Bootstrap Team** — For the UI framework.
 
 ---
 *Developed with ❤️ for Ayesha Abed Foundation.*
