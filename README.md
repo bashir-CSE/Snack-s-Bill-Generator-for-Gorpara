@@ -1,5 +1,4 @@
-Automation Link: https://script.google.com/macros/s/AKfycbzlL7oMpgigyGsCYTm0WAvZUTK4hT6Hsq0TtgOmOI9Wz-VbiylxvOM57leGeun8t0pp/exec
-
+Automation Link: https://script.google.com/macros/s/AKfycbyWQmY8zlVSarYIEpRdgk0F8E09VQjWd_e3NJMr4sfu75TJXw_QOYmOoiU4hx6-YtbM/exec
 # Snack's Bill Generator
 
 ![Built with Google Apps Script](https://img.shields.io/badge/Backend-Google%20Apps%20Script-blue)
