@@ -53,6 +53,9 @@
       font-size: 1.1rem;
       color: var(--primary);
       letter-spacing: -0.3px;
+      display: inline-flex;
+  justify-content: center;
+  align-items: center;
     }
 
     .date-input-wrap {
@@ -179,7 +182,6 @@
     .history-list li:hover { background: #eef2ff; }
     .history-list .h-info { min-width: 0; flex: 1; }
     .history-list .h-section { font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .history-list .h-time { font-size: 0.76rem; color: var(--text-secondary); margin-top: 1px; }
     .history-list .h-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 10px; }
 
     .history-list .h-delete {
@@ -555,6 +557,39 @@
       display: flex;
       justify-content: flex-end;
     }
+
+    .travel-bill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .travel-bill-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+
+    .travel-bill-btn i { font-size: 0.8rem; }
+
+    @media (max-width: 768px) {
+      .travel-bill-btn .btn-text { display: none; }
+      .travel-bill-btn { padding: 5px 10px; }
+      .top-navbar .brand { font-size: 0.9rem; }
+    }
   </style>
 </head>
 
@@ -562,7 +597,12 @@
 
   <nav class="top-navbar fade-in-simple">
     <div class="container d-flex align-items-center justify-content-between">
-      <span class="brand"><i class="fas fa-file-invoice-dollar me-2"></i>Snacks Bill Generator</span>
+      <span class="brand"><i class="fas fa-mug-hot me-2 mb-1"></i>Snacks Bill Generator</span>
+      <a href="https://script.google.com/macros/s/AKfycbyS8zJyywJ4ipm_7X_3RZVYi2JR4712xgJOFIccU-T8QfVAx0SdlCsBlodkSFYa3i11/exec"
+         target="_blank" class="travel-bill-btn" title="Open Travel Bill Generator">
+        <i class="fas fa-mug-hot"></i>
+        <span class="btn-text">Go to Travel Bill</span>
+      </a>
       <div class="date-input-wrap">
         <i class="fas fa-calendar-day"></i>
         <input type="date" id="billDate">
@@ -573,7 +613,7 @@
   <div id="loadingOverlay">
     <div class="loading-box fade-in-simple">
       <i class="fas fa-file-export confirm-icon-animate"></i>
-      <p id="loadingText">Cooking PDF Document...</p>
+      <p id="loadingText">Generating your snacks bill...</p>
       <div class="progress-wrapper">
         <div class="progress-bar-striped-animated"></div>
       </div>
@@ -697,7 +737,7 @@
 
         <div class="artisan-modal-footer">
           <button type="button" class="btn btn-generate" onclick="showConfirmation()" id="generateBtn">
-            <i class="fas fa-file-pdf me-2"></i> Cook Your Snacks Bill
+            <i class="fas fa-file-pdf me-2"></i> Generate Your Snacks Bill
           </button>
         </div>
 
@@ -713,7 +753,7 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4 text-center">
-          <h6 class="mb-3 text-secondary" style="font-weight: 600;">Are you sure you want to cook?</h6>
+          <h6 class="mb-3 text-secondary" style="font-weight: 600;">Are you sure you want to generate?</h6>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary btn-sm" onclick="goBackToArtisans()">
@@ -792,7 +832,7 @@
         <i class="fab fa-linkedin fa-lg"></i>
       </a>
     </div>
-    <div>© <span id="footerYear"></span> Ayesha Abed Foundation — Gorpara, Manikganj. All rights reserved.</div>
+    <div>© <span id="footerYear"></span> Ayesha Abed Foundation — Gorpara, Manikganj. All rights reserved. V8</div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -864,9 +904,8 @@
       bills.forEach(function (bill) {
         var safeUrl = escHtml(bill.url).replace(/'/g, "\\'");
         var safeSection = escHtml(bill.section).replace(/'/g, "\\'");
-        html += '<li><div class="h-info"><div class="h-section">' + escHtml(bill.section) + '</div>' +
-          (bill.time ? '<div class="h-time"><i class="far fa-clock me-1"></i>' + escHtml(bill.time) + '</div>' : '') +
-          '</div><div class="h-actions">' +
+        html += '<li><div class="h-info"><div class="h-section">' + escHtml(bill.section) + '</div></div>' +
+          '<div class="h-actions">' +
           '<button class="h-delete" onclick="deleteBillEntry(\'' + safeUrl + '\', \'' + safeSection + '\')" title="Delete this bill"><i class="fas fa-trash-alt"></i></button>' +
           '<a href="' + escHtml(bill.url) + '" target="_blank" class="h-link" title="Open in Drive"><i class="fas fa-external-link-alt"></i></a>' +
           '</div></li>';

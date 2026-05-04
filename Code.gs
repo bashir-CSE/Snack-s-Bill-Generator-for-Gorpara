@@ -2,7 +2,7 @@ var SPREADSHEET_ID = '1S-sSi4VPvU2DjuQ_Ji-c8P_ZfteESvQiJ9Wne1dnA_o';
 var DRIVE_FOLDER_ID = '1DvAqAkA5FzpCFXOpyO6_0mLEuuJvJrEY';
 var SHEET_SECTIONS = "Sections";
 var SHEET_ARTISANS = "Artisans";
-var SHEET_BILLS = "Snack's Bill";
+var SHEET_BILLS = "History Sheet";
 
 function doGet() {
   return HtmlService.createTemplateFromFile('index')
@@ -35,10 +35,10 @@ function midnightCleanup() {
   if (!sheet || sheet.getLastRow() <= 1) return;
 
   var lastRow = sheet.getLastRow();
-  var data = sheet.getRange(2, 1, lastRow - 1, 3).getValues();
+  var data = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
 
   for (var i = 0; i < data.length; i++) {
-    var fileUrl = String(data[i][2]);
+    var fileUrl = String(data[i][1]);
     if (!fileUrl || fileUrl === 'undefined' || fileUrl === '') continue;
     try {
       var match = fileUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
@@ -135,30 +135,15 @@ function getTodayHistory() {
   var sheet = ss.getSheetByName(SHEET_BILLS);
   if (!sheet || sheet.getLastRow() <= 1) return [];
 
-  var now = new Date();
-  var todayStr = now.getDate() + '/' + (now.getMonth() + 1) + '/' + now.getFullYear();
-
   var lastRow = sheet.getLastRow();
-  var data = sheet.getRange(2, 1, lastRow - 1, 4).getValues();
+  var data = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
 
   var bills = [];
   for (var i = data.length - 1; i >= 0; i--) {
-    if (String(data[i][0]) === todayStr) {
-      var timeStr = '';
-      var rawTime = data[i][3];
-      if (rawTime) {
-        if (rawTime instanceof Date) {
-          timeStr = Utilities.formatDate(rawTime, Session.getScriptTimeZone(), "dd MMM yyyy, hh:mm a");
-        } else {
-          timeStr = String(rawTime);
-        }
-      }
-      bills.push({
-        section: String(data[i][1]),
-        url: String(data[i][2]),
-        time: timeStr
-      });
-    }
+    bills.push({
+      section: String(data[i][0]),
+      url: String(data[i][1])
+    });
   }
   return bills;
 }
@@ -249,11 +234,11 @@ function deleteBill(billUrl) {
   }
 
   var lastRow = sheet.getLastRow();
-  var data = sheet.getRange(2, 1, lastRow - 1, 3).getValues();
+  var data = sheet.getRange(2, 1, lastRow - 1, 2).getValues();
 
   var rowToDelete = -1;
   for (var i = 0; i < data.length; i++) {
-    if (String(data[i][2]) === billUrl) {
+    if (String(data[i][1]) === billUrl) {
       rowToDelete = i + 2;
       break;
     }
@@ -280,16 +265,15 @@ function generateBills(selectedData, sectionName, dateStr, snacksRate) {
 
     var parentFolder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
     var targetFolder;
-    var folders = parentFolder.getFoldersByName("Snack's Bill");
+    var folders = parentFolder.getFoldersByName("Automation Generated File");
     if (folders.hasNext()) {
       targetFolder = folders.next();
     } else {
-      targetFolder = parentFolder.createFolder("Snack's Bill");
+      targetFolder = parentFolder.createFolder("Automation Generated File");
     }
 
     var now = new Date();
     var timestamp = Utilities.formatDate(now, Session.getScriptTimeZone(), "dd/MM/yyyy, hh:mm a");
-    var displayTimestamp = Utilities.formatDate(now, Session.getScriptTimeZone(), "dd MMM yyyy, hh:mm a");
 
     var html = getPdfHtmlTemplate(selectedData, sectionName, dateStr, snacksRate, timestamp);
     var fileName = "Snack's Bill - " + sectionName + " - " + dateStr.replace(/\//g, '-') + ".pdf";
@@ -303,14 +287,11 @@ function generateBills(selectedData, sectionName, dateStr, snacksRate) {
     var historySheet = ss.getSheetByName(SHEET_BILLS);
     if (!historySheet) {
       historySheet = ss.insertSheet(SHEET_BILLS);
-      historySheet.appendRow(["Date", "Section Name", "Bill", "Time"]);
-      historySheet.getRange("A1:D1").setFontWeight("bold");
+      historySheet.appendRow(["Section Name", "Bill"]);
+      historySheet.getRange("A1:B1").setFontWeight("bold");
     }
 
-    historySheet.appendRow(['', sectionName, fileUrl, '']);
-    var lr = historySheet.getLastRow();
-    historySheet.getRange(lr, 1).setValue(dateStr);
-    historySheet.getRange(lr, 4).setValue(displayTimestamp);
+    historySheet.appendRow([sectionName, fileUrl]);
 
     return {
       success: true,
@@ -336,7 +317,7 @@ function getPdfHtmlTemplate(data, sectionName, dateStr, snacksRate, timestamp) {
     'h2 { text-align: center; margin: 0; font-size: 14px; font-weight: bold; }' +
     'h3 { text-align: center; margin: 5px 0 10px 0; font-size: 12px; font-weight: bold; }' +
     'table { width: 100%; border-collapse: collapse; }' +
-    'th, td { font-size: 14px; border: 0.5px solid #8b8b8b; padding: 1.3px; text-align: center; }' +
+    'th, td { font-size: 13px; border: 0.5px solid #8b8b8b; padding: 1.3px; text-align: center; }' +
     'th { font-weight: bold; }' +
     '.header-table { margin-bottom: -1px; }' +
     '.header-table td { text-align: left; font-weight: bold; border-bottom: none; }' +

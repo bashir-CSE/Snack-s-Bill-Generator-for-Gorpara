@@ -34,7 +34,7 @@ In our production center, the Section In-charge faced significant challenges wit
 
 The **Snack's Bill Generator** is a serverless web application hosted on Google Apps Script. It digitizes the billing workflow, allowing section in-charges to generate professional PDF bills in Bengali directly from their browser.
 
-**Latest Update:** The system now features **Centralized Artisan Management** and **Full Record Control**, allowing users to manage artisans and generated bills directly from the interface.
+**Latest Update (V8):** The system has been streamlined with a simplified history management system, cross-app navigation to the Travel Bill Generator, and refined UI terminology for a more professional user experience.
 
 ---
 
@@ -44,20 +44,24 @@ The **Snack's Bill Generator** is a serverless web application hosted on Google 
 *   **Dynamic PDF Creation:** Generates print-ready PDFs with Bengali numerals and text conversion (e.g., `150` → `একশ পঞ্চাশ`).
 *   **Smart Pagination:** Automatically splits large lists into multiple pages (30 artisans per page) with sub-totals.
 *   **Signature Ready:** Includes designated areas for Prepared By, Verified By, and Approved By.
+*   **Professional Terminology:** Updated UI flow for a more intuitive "Generation" process.
 
 ### 2. Centralized Data Management
 *   **Unified Artisan List:** All artisans across all sections are now managed in a single `Artisans` sheet, making it easier to maintain.
 *   **Quick Add Artisans:** Users can instantly add a new artisan name and code to any section via the "Quick Add" bar.
 *   **Artisan Deletion:** Remove duplicate or inactive artisan records directly from the selection table.
 
-### 3. Record Management & History
-*   **Today's History:** Displays all bills generated on the current day with timestamps.
-*   **Delete Bill:** Users can now delete a generated bill from the history. This action automatically removes the record from the spreadsheet and trashes the PDF file in Google Drive.
+### 3. Streamlined Record Management
+*   **Simplified History:** Tracks all generated bills in a consolidated "History Sheet" for faster access and better overview.
+*   **Delete Bill:** Users can delete generated bills from the history. This action removes the record and trashes the PDF file in Google Drive.
+*   **Organized Storage:** Automatically saves files in a dedicated "Automation Generated File" folder.
 
 ### 4. Modern User Interface & UX
+*   **Cross-App Navigation:** Integrated link to the **Travel Bill Generator** for seamless switching between tools.
 *   **Improved Workflows:** Added confirmation modals for generating and deleting records to prevent accidental actions.
 *   **Real-time Search:** Filter artisans by name or code instantly.
 *   **Glassmorphism Design:** A clean, modern aesthetic with smooth animations and interactive feedback.
+*   **V8 Refinements:** Small layout tweaks and footer versioning for better tracking.
 
 ### 5. Cloud Architecture
 *   **Google Drive Integration:** PDFs are automatically saved and organized in a specific Drive folder.
